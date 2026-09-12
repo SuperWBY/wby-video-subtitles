@@ -1,5 +1,7 @@
 # WBY Video Subtitles
 
+**English** · [简体中文](README.zh-CN.md) · [日本語](README.ja.md)
+
 ![WBY Video Subtitles: adaptive size, bilingual subtitles, and timed color](assets/hero.png)
 
 `WBY Video Subtitles` is a local Codex Skill for turning a video into editable Chinese subtitles, then preparing ASS/SRT, checking layout, previewing, and rendering a subtitle-burned video.
