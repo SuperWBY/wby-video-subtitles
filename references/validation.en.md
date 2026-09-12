@@ -1,5 +1,11 @@
 # Validation record
 
+## 1.3.2 (2026-09-12)
+
+- Reworked all README pages into one primary visual, one collapsible animated proof, and one three-row capability table so the hero and animation do not compete in the first viewport.
+- Repositioned the product as a portable Skill callable by different Agents; Codex remains only an installation example.
+- Local relative-link checks pass for all three README pages.
+
 ## 1.3.1 (2026-09-12)
 
 - Removed the release-exclusions section from all three README languages and added reader-facing capability tables.

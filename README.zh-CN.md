@@ -4,33 +4,26 @@
 
 ![WBY Video Subtitles：自适应字号、双语字幕与定时变色](assets/hero.png)
 
-![动态演示：语音变为可编辑字幕，再生成自适应、多语言和定时强调效果](assets/demo.gif)
-
-`WBY Video Subtitles` 是一个不限定源语言的本地 Codex Skill，可以把视频口播或已有字幕转换为可编辑字幕，并完成 ASS/SRT 生成、排版检查、预览和字幕烧录。
+`WBY Video Subtitles` 是一个不限定源语言、可被不同 Agent 调用的本地 Skill，可以把视频口播或已有字幕转换为可编辑字幕，并完成 ASS/SRT 生成、排版检查、预览和字幕烧录。
 
 它适合重复制作口播和录屏视频：每个源视频使用独立任务目录，拥有自己的样式、术语表和修订记录。
 
-## 从口播到带样式字幕
+## 一套流程，三个可见结果
 
 | 能力 | 它解决什么问题 |
 |---|---|
-| 自动识别或指定源语言 | 从视频实际口播的语言开始，而不是被固定语言预设限制。 |
-| 保持字幕可编辑 | 复核转写、带依据校正术语，并输出可编辑 SRT 和 ASS。 |
-| 让双语保持可读 | 将已复核的原文和译文放入两行实测排版，不会静默裁字。 |
-| 让重点词被看见 | 按已复核的时间点放大或变色，让关键表达更突出。 |
-| 适应真实画布 | 根据视频高度计算字号，只在设定安全下限内缩小。 |
+| 自适应字号 | 依据选定字体与实际画布测量，在两行安全区内完成排版。 |
+| 多语言双语 | 自动识别或指定源语言，再将复核后的原文和译文置入两行实测排版。 |
+| 定时强调 | 按复核后的时间点放大或变色，让关键表达更突出。 |
 
-## 功能
+<details>
+<summary>查看动态演示</summary>
 
-- 默认自动识别口播语言，也可以明确指定转写后端支持的源语言代码。
-- 将原始转写与人工复核后的 `captions.json` 分开保存。
-- 用 `terms` 提示 `Codex`、`Figma`、产品名等专有名词；最终结果仍需复听确认。
-- 为每个任务设置字体、字号、文字颜色、描边、背景颜色与透明度、边距和上下位置。
-- 根据已复核的时间轴，让字幕在指定口播时刻放大、缩小或变色。
-- 在字体支持的任意源语言和目标语言之间导入人工复核译文，以原文一行、译文一行的方式渲染。
-- 应用人工确认的术语修正，并自动备份旧稿、记录修改依据。
-- 使用真实字体宽度计算排版，最多显示两行；无法安全容纳时直接停止，不会静默删字。
-- 输出带版本的 SRT、ASS、预览视频、最终 MP4 和检查报告。
+<img src="assets/demo.gif" alt="动态演示：语音变为可编辑字幕，再生成自适应、多语言和定时强调效果" width="768">
+
+</details>
+
+流程会将原始转写与人工复核后的 `captions.json` 分开保存，带依据记录术语修正，并输出带版本的 SRT、ASS、预览、最终 MP4 与检查报告。两行无法安全容纳的文本会停止并要求处理，不会静默裁字。
 
 ## 内置字体与字号预设
 
@@ -52,9 +45,13 @@
 - `requirements.txt` 中的 Python 依赖。
 - 转写：Apple Silicon 使用 `mlx-whisper`；其他平台需自行验证合适的 `faster-whisper` 环境。
 
-## 安装为 Codex Skill
+## 安装这个 Skill
 
-将仓库克隆到 Codex Skills 目录：
+先确认你所使用 Agent 文档规定的 Skill 目录，再克隆仓库到该目录，或使用仓库内安装器传入该目录。仓库保持自包含，安装器也不会覆盖已有副本。
+
+### Codex 示例
+
+将仓库克隆到 Codex 配置的 Skill 目录：
 
 ```sh
 git clone https://github.com/SuperWBY/wby-video-subtitles.git ~/.codex/skills/wby-video-subtitles
@@ -66,7 +63,7 @@ git clone https://github.com/SuperWBY/wby-video-subtitles.git ~/.codex/skills/wb
 python3 scripts/install.py --target /absolute/path/to/that-agent/skills
 ```
 
-安装器会复制完整的自包含目录，并拒绝覆盖已有副本。安装成功不等于目标 Agent 已经发现并执行 Skill；请按照 [兼容性说明](references/compatibility.md) 完成验证。
+安装成功不等于目标 Agent 已经发现并执行 Skill；请按照 [英文兼容性说明](references/compatibility.en.md) 完成验证。
 
 建立本地虚拟环境并安装依赖：
 

@@ -4,33 +4,26 @@
 
 ![WBY Video Subtitles: adaptive size, bilingual subtitles, and timed color](assets/hero.png)
 
-![Animated workflow: speech becomes editable subtitles, then adaptive, multilingual, timed styling](assets/demo.gif)
-
-`WBY Video Subtitles` is a language-neutral local Codex Skill for turning speech or existing captions into editable subtitles, then preparing ASS/SRT, checking layout, previewing, and rendering a subtitle-burned video.
+`WBY Video Subtitles` is a portable, language-neutral Skill for turning speech or existing captions into editable subtitles, then preparing ASS/SRT, checking layout, previewing, and rendering a subtitle-burned video.
 
 It is designed for repeatable talking-head and screen-recording videos: each source video has an independent job, its own style, and its own terminology list.
 
-## From speech to styled captions
+## One workflow, three visible outcomes
 
 | Capability | What it gives you |
 |---|---|
-| Auto detect or select a source language | Start from the spoken language already in the video, rather than a fixed language preset. |
-| Keep captions editable | Review the transcription, correct terms with an evidence trail, and export editable SRT and ASS. |
-| Make language pairs readable | Place reviewed source and translation text on two measured lines, with no silent clipping. |
-| Make key phrases visible | Use reviewed timestamps to enlarge or recolor the subtitle when the spoken message matters most. |
-| Fit the actual canvas | Size subtitles from video height and shrink only within a chosen safe limit. |
+| Adaptive size | Measure the selected font against the actual canvas and keep subtitles inside a two-line safe area. |
+| Multilingual pairs | Detect or select the source language, then place reviewed source and translation on two measured lines. |
+| Timed emphasis | Use reviewed timestamps to enlarge or recolor the subtitle when the spoken message matters most. |
 
-## What it does
+<details>
+<summary>Watch the animated walkthrough</summary>
 
-- Automatically detects the spoken language by default, or accepts an explicit backend-supported source language code.
-- Keeps the raw transcription separate from reviewed `captions.json`.
-- Uses `terms` as context for names such as `Codex`, `Figma`, and product terminology; review remains required.
-- Lets each job set font, size, text color, outline, background color/transparency, margins, and top/bottom position.
-- Applies reviewed timeline effects that enlarge, shrink, or recolor the displayed subtitle during selected spoken moments.
-- Imports a reviewed translation between any source and target languages supported by the selected font, then renders source and translation as exactly two lines.
-- Applies reviewed terminology corrections with a backup and edit log.
-- Measures the selected font and produces subtitle cues of at most two rendered lines. It refuses layouts that cannot fit without silently dropping text.
-- Produces versioned SRT, ASS, preview media, a rendered MP4, and a report of warnings and unchecked items.
+<img src="assets/demo.gif" alt="Animated workflow: speech becomes editable subtitles, then adaptive, multilingual, timed styling" width="768">
+
+</details>
+
+The workflow keeps raw transcription separate from reviewed `captions.json`, records terminology corrections with evidence, and produces versioned SRT, ASS, previews, rendered MP4, and review reports. It never silently clips text that cannot fit.
 
 ## Built-in font and size presets
 
@@ -52,9 +45,13 @@ The repository includes `Noto Sans CJK SC Regular` under the SIL Open Font Licen
 - Python packages from `requirements.txt`.
 - For transcription: `mlx-whisper` on Apple Silicon, or an independently tested `faster-whisper` setup.
 
-## Install as a Codex Skill
+## Install the Skill
 
-Clone the repository into your Codex skills directory:
+Choose the Skill directory documented by the Agent you use, then clone the repository there or run the included installer with that parent directory. The repository stays self-contained and the installer refuses to overwrite an existing copy.
+
+### Codex example
+
+Clone the repository into Codex's configured Skill directory:
 
 ```sh
 git clone https://github.com/SuperWBY/wby-video-subtitles.git ~/.codex/skills/wby-video-subtitles
@@ -66,7 +63,7 @@ For another Agent, find that client's documented Skill parent directory, then ru
 python3 scripts/install.py --target /absolute/path/to/that-agent/skills
 ```
 
-This installs the same self-contained folder and refuses to overwrite an existing copy. Installation alone does not prove that the target Agent discovered or executed the Skill; run the validation flow described in [references/compatibility.md](references/compatibility.md).
+Installation alone does not prove that the target Agent discovered or executed the Skill; run the validation flow described in [references/compatibility.en.md](references/compatibility.en.md).
 
 Create a local virtual environment and install the base dependencies:
 
