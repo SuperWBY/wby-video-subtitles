@@ -4,9 +4,21 @@
 
 ![WBY Video Subtitles: adaptive size, bilingual subtitles, and timed color](assets/hero.png)
 
+![Animated workflow: speech becomes editable subtitles, then adaptive, multilingual, timed styling](assets/demo.gif)
+
 `WBY Video Subtitles` is a language-neutral local Codex Skill for turning speech or existing captions into editable subtitles, then preparing ASS/SRT, checking layout, previewing, and rendering a subtitle-burned video.
 
 It is designed for repeatable talking-head and screen-recording videos: each source video has an independent job, its own style, and its own terminology list.
+
+## From speech to styled captions
+
+| Capability | What it gives you |
+|---|---|
+| Auto detect or select a source language | Start from the spoken language already in the video, rather than a fixed language preset. |
+| Keep captions editable | Review the transcription, correct terms with an evidence trail, and export editable SRT and ASS. |
+| Make language pairs readable | Place reviewed source and translation text on two measured lines, with no silent clipping. |
+| Make key phrases visible | Use reviewed timestamps to enlarge or recolor the subtitle when the spoken message matters most. |
+| Fit the actual canvas | Size subtitles from video height and shrink only within a chosen safe limit. |
 
 ## What it does
 
@@ -31,13 +43,6 @@ The repository includes `Noto Sans CJK SC Regular` under the SIL Open Font Licen
 | `emphasis` | 5.2% | 4.0% | 80% | Sparse, high-impact captions |
 
 `standard` starts near 49 px on a 1080-high frame and 97 px on a 2160-high frame. The renderer can shrink individual cues toward the preset minimum when needed; it still refuses content that cannot fit in two lines without dropping text.
-
-## Not included in this release
-
-- Motion graphics, tracked objects, and character animation. Those files are intentionally isolated from this repository.
-- Live speech control. Timed style changes are prepared from the recorded video's timestamps.
-- Automatic translation API calls. The Agent drafts translations and the user reviews them before import.
-- A guarantee that the same setup works in every Agent, client, operating system, or third-party player.
 
 ## Requirements
 

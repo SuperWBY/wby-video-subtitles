@@ -2,7 +2,7 @@
 name: wby-video-subtitles
 description: Generate, review, translate, style, preview, and render local video subtitles with WBY terminology correction, bilingual two-line layout, and timed size/color effects. Use for talking-head and screen-recording subtitle work; excludes character and object animation.
 metadata:
-  version: 1.3.0
+  version: 1.3.1
 ---
 
 # WBY Video Subtitles

@@ -4,7 +4,7 @@ import argparse, hashlib, json, math, os, re, shutil, subprocess, sys, tempfile
 from pathlib import Path
 from datetime import datetime, timezone
 
-VERSION='1.3.0'
+VERSION='1.3.1'
 SKILL_ROOT=Path(__file__).resolve().parent.parent
 BUNDLED_FONT=SKILL_ROOT/'assets/fonts/NotoSansCJKsc-Regular.otf'
 STYLE_PRESETS={

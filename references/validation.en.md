@@ -1,5 +1,11 @@
 # Validation record
 
+## 1.3.1 (2026-09-12)
+
+- Removed the release-exclusions section from all three README languages and added reader-facing capability tables.
+- Created `assets/demo.gif`, a 768x432, 72-frame looping demonstration. Key frames were visually checked for auto detect, English/French bilingual layout, and Spanish timed emphasis.
+- Local relative-link checks pass for the three README files, the GIF, and the documentation references.
+
 ## 1.3.0 (2026-09-12)
 
 Validated on macOS Apple Silicon with Python 3.12 and FFmpeg:
