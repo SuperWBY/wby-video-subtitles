@@ -52,13 +52,11 @@
 复制下面的提示词，发送给能够操作本地文件和终端的 Agent：
 
 ```text
-请帮我把 WBY Video Subtitles 安装到我当前使用的 Agent 中：
+请按仓库 SKILL.md 中的流程，帮我安装这个 Skill：
 https://github.com/SuperWBY/wby-video-subtitles
-
-先阅读仓库的 README 和 SKILL.md，根据当前客户端的配置或文档确认实际 Skill 目录，再将完整仓库安装到该目录，不要默认我使用的是 Codex。如果已经安装，先检查来源和本地修改，再决定如何更新，保留我的本地改动。
-
-请使用独立 Python 环境安装所需依赖，检查 FFmpeg/libass，并根据我的操作系统选择合适的转写后端。使用内置字体和默认样式预设，运行 scripts/subtitles.py doctor，最后告诉我安装路径、依赖检查结果，以及当前客户端是否能发现这个 Skill。如果需要重新加载或新建会话，请给出具体下一步；如果没有本地执行权限或无法确认 Skill 目录，请说明缺少什么，不要将未完成的安装说成成功。
 ```
+
+安装、依赖配置、更新和验证流程已包含在 [Skill](SKILL.md#installation-and-updates) 中，由 Agent 读取执行。
 
 ### 手动安装
 

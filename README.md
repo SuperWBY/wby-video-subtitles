@@ -52,13 +52,11 @@ The repository includes `Noto Sans CJK SC Regular` under the SIL Open Font Licen
 Copy this prompt into an Agent with local file and terminal access:
 
 ```text
-Please install WBY Video Subtitles for the Agent I am currently using:
+Please install this Skill following its SKILL.md:
 https://github.com/SuperWBY/wby-video-subtitles
-
-Read the repository's README and SKILL.md, determine this client's actual Skill directory from its configuration or documentation, and install the complete repository there. Do not assume that the client is Codex. If an installation already exists, inspect its origin and local changes before updating it; preserve local modifications.
-
-Use an isolated Python environment to install the required dependencies, check FFmpeg/libass, and select a transcription backend appropriate for my operating system. Use the bundled font and default style preset. Run scripts/subtitles.py doctor and report the installation path, dependency status, and whether the client can discover the Skill. If a reload or new session is needed, explain the exact next step. If local execution or the Skill directory cannot be determined, explain what is missing rather than claiming installation succeeded.
 ```
+
+The [Skill](SKILL.md#installation-and-updates) contains the installation, dependency, update, and verification workflow.
 
 ### Manual installation
 

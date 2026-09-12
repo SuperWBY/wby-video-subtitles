@@ -11,6 +11,16 @@ metadata:
 
 Use this Skill for a local video in any source language supported by the selected transcription backend. Run `doctor` before the first job. Treat `captions.json` as the reviewed source of truth and preserve the original transcription.
 
+## Installation and updates
+
+When asked to install this Skill, complete setup using this procedure before starting a video job:
+
+1. Identify the current client's configured Skill parent directory from its local configuration or documentation. Install the complete repository from `https://github.com/SuperWBY/wby-video-subtitles` into a `wby-video-subtitles` child directory. A Git clone preserves the source for future updates; `scripts/install.py --target PARENT` can copy a downloaded checkout. If the directory cannot be determined or local execution is unavailable, report the missing requirement.
+2. For an existing installation, inspect its origin and working-tree changes before updating. Fast-forward a clean checkout from the matching upstream; preserve local edits and resolve conflicting updates explicitly. Do not overwrite a non-Git installation without comparing and preserving its local changes.
+3. Create or reuse a dedicated Python virtual environment outside the Skill directory. Install the installed copy's `requirements.txt`. On Apple Silicon, install `mlx-whisper`; for other systems, use `faster-whisper` and a matching model. When creating jobs on that backend, set `config.json` to `backend: faster-whisper` and a compatible model such as `large-v3-turbo`. Keep machine-specific paths outside the distributed Skill.
+4. Check FFmpeg for the `ass`/libass filter and `libx264` encoder. Use an available compatible build or install one with the platform package manager. The imageio-ffmpeg fallback must also pass these checks. Use the bundled font, `standard` size preset, and automatic source-language detection for new jobs; preserve existing user settings.
+5. Run `scripts/subtitles.py doctor` with the dedicated environment's Python. Inspect package, filter, and font results, then run `scripts/self_test.py`. Verify client discovery separately from file installation. Report the installed path, dependency status, and any client-specific reload step. Model download and real-audio transcription verification are separate from installation; do not report them as tested unless executed.
+
 ## Workflow
 
 1. Create one empty job directory per source video with `init`. The job verifies the source hash and refuses stale reuse. Source language defaults to automatic detection; use `--language en`, `fr`, `zh`, or another backend-supported code when explicit control is needed. It uses the bundled Noto Sans CJK SC font and the `standard` size preset unless a machine font, `--font`, or another preset is selected.
