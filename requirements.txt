@@ -1,0 +1,9 @@
+Pillow==12.3.0
+fonttools==4.64.0
+imageio-ffmpeg==0.6.0
+jieba==0.42.1
+# Optional transcription: mlx-whisper==0.4.3 on Apple Silicon.
+# faster-whisper is an optional, unvalidated alternative backend.
+
+# Optional hand tracking (tested on macOS Apple Silicon):
+# mediapipe==0.10.21
