@@ -23,6 +23,8 @@ PY SCRIPT init --video VIDEO --job JOB --font FONT
 PY SCRIPT transcribe --job JOB
 # 或导入已有字幕（不能在已有 captions.json 的 job 再导入）
 PY SCRIPT import-srt --job JOB --srt SRT
+PY SCRIPT apply-terms --job JOB --json REVIEWED_CORRECTIONS
+PY SCRIPT import-translations --job JOB --json REVIEWED_TRANSLATIONS
 PY SCRIPT prepare --job JOB
 PY SCRIPT preview --job JOB --start 0 --seconds 8
 PY SCRIPT render --job JOB
@@ -45,6 +47,7 @@ PY SCRIPT render --job JOB
 | max_lines | 固定 2，不允许改成 3 |
 | max_cps / min_duration / max_duration | 阅读速度及停留时间告警阈值；非行业通用标准 |
 | terms | 本期术语字符串数组，用于转写提示和缺失提示，不自动替换 |
+| translation_font_scale / translation_color | 双语第二行相对字号（0.5–1）和颜色 |
 | backend / model / language | mlx 或 faster-whisper；模型名需与后端匹配；语言默认 zh |
 
 背景是 libass 的矩形字幕背景，不支持圆角气泡。V0.1 把最终音频转为 AAC，不承诺原音轨逐字节相同。
@@ -60,3 +63,55 @@ captions.json 是可编辑主稿，每项有 start/end/text，可选 words。修
 错误返回非零退出码和 JSON error。无音轨可导入现成字幕；缺字先选择覆盖所需字符的字体；孤立超长词无法适配时调整宽度、字号或用户认可的分词位置。不要静默删字、截断或把失败视频标成完成。
 
 prepare 报告只提供初步疑点。要查具体片段可用 preview 指定其 start，生成 PNG 和视频。首次新样式先出样片，后续明确授权的同样式批处理无需重复问。
+
+## 术语校正
+
+`terms` 会进入转写提示，但不会强行替换近音词。复听后创建校正文件；目标词必须已经列入 `config.json` 的 `terms`：
+
+```json
+{
+  "version": 1,
+  "corrections": [{
+    "source_cue": 3,
+    "from": "飞个马",
+    "to": "Figma",
+    "evidence": "复听 00:03.60–00:09.32，口播明确为 Figma"
+  }]
+}
+```
+
+`apply-terms` 只替换指定字幕中唯一匹配的文字，先在 `backups/` 保存旧稿，再把依据写入 `edits.json`。它不是自动语义纠错。
+
+## 双语字幕
+
+先校正原文，再为每条源字幕生成并复核一条目标语言翻译。输入文件必须覆盖所有源字幕：
+
+```json
+{
+  "version": 1,
+  "target_language": "fr",
+  "cues": [{
+    "source_cue": 1,
+    "source_text": "看字幕，变大。",
+    "text": "Regardez les sous-titres s'agrandir."
+  }]
+}
+```
+
+导入时保存源字幕哈希；之后若原文发生变化，`prepare` 会拒绝继续。双语模式固定原文一行、译文一行。任一行在最小字号仍放不下时会报错，必须人工拆句和重新定时，不会压成第三行或裁字。
+
+## 按口播制作字号和颜色效果
+
+在 job 根目录创建 `style-effects.json`。时间是源视频的绝对秒数：
+
+```json
+{
+  "version": 1,
+  "effects": [
+    {"start": 0.8, "end": 1.8, "font_scale": 1.6, "transition_ms": 120},
+    {"start": 2.0, "end": 3.2, "font_scale": 1.0, "text_color": "#FFD400", "transition_ms": 100}
+  ]
+}
+```
+
+`font_scale` 范围是 0.5–3，`transition_ms` 范围是 0–1000。效果作用于该时间内显示的整条字幕，可在字幕显示期间开始或结束。先对照口播和源视频确定时间，再生成局部预览；这不是录制时的实时语音控制。

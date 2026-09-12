@@ -62,4 +62,39 @@ class Pipeline(unittest.TestCase):
         s.save(self.job/'captions.json',[dict(start=0,end=10,text='{\\fs200}hello')])
         with self.assertRaisesRegex(ValueError,'control characters'):self.prep()
 
+    def test_dynamic_scale_and_color_effects(self):
+        s.save(self.job/'captions.json',[dict(start=0,end=5,text='看字幕变大，再变成黄色')])
+        s.save(self.job/'style-effects.json',{'version':1,'effects':[{'start':1,'end':3,'font_scale':1.6,'text_color':'#FFFF00','transition_ms':120}]})
+        ass=(self.prep()/'subtitles.ass').read_text()
+        self.assertIn('\\fscx160\\fscy160',ass)
+        self.assertIn('\\1c&H00FFFF&',ass)
+        self.assertIn('\\t(',ass)
+        self.assertTrue((Path(s.read(self.job/'latest.json')['revision'])/'style-effects.json').exists())
+
+    def test_bilingual_import_and_two_line_layout(self):
+        s.save(self.job/'captions.json',[dict(start=0,end=5,text='字幕可以自动适配画布')])
+        source=self.job/'translated-input.json'
+        s.save(source,{'version':1,'target_language':'en','cues':[{'source_cue':1,'source_text':'字幕可以自动适配画布','text':'Subtitles adapt to the video canvas.'}]})
+        with contextlib.redirect_stdout(io.StringIO()):s.importtranslations(SimpleNamespace(job=str(self.job),json=str(source)))
+        r=self.prep();layout=s.read(r/'layout.json');report=s.read(r/'report.json')
+        self.assertEqual(2,len(layout[0]['lines']))
+        self.assertEqual('Subtitles adapt to the video canvas.',layout[0]['lines'][1])
+        self.assertTrue(report['bilingual']);self.assertEqual('en',report['target_language'])
+        self.assertTrue((r/'translations.json').exists())
+
+    def test_reviewed_term_correction_is_logged_and_backed_up(self):
+        s.save(self.job/'captions.json',[dict(start=0,end=5,text='我使用飞个马制作海报')])
+        self.config['terms']=['Figma'];s.save(self.job/'config.json',self.config)
+        source=self.job/'corrections.json'
+        s.save(source,{'version':1,'corrections':[{'source_cue':1,'from':'飞个马','to':'Figma','evidence':'listened to source audio'}]})
+        with contextlib.redirect_stdout(io.StringIO()):s.applyterms(SimpleNamespace(job=str(self.job),json=str(source)))
+        self.assertEqual('我使用Figma制作海报',s.read(self.job/'captions.json')[0]['text'])
+        self.assertEqual('reviewed_term_correction',s.read(self.job/'edits.json')[0]['kind'])
+        self.assertEqual(1,len(list((self.job/'backups').glob('*-captions-before-term-correction.json'))))
+
+    def test_canvas_height_controls_base_font_size(self):
+        manifest=s.read(self.job/'manifest.json');manifest['video']['width']=1920;manifest['video']['height']=1080;s.save(self.job/'manifest.json',manifest)
+        s.save(self.job/'captions.json',[dict(start=0,end=5,text='横版视频字幕')]);landscape=self.prep()
+        self.assertEqual(round(1080*self.config['font_size_ratio']),s.read(landscape/'layout.json')[0]['font_size'])
+
 if __name__=='__main__':unittest.main()

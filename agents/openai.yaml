@@ -1,4 +1,4 @@
 interface:
   display_name: "WBY 视频字幕助手"
-  short_description: "生成可编辑字幕，配置术语与样式并检查两行排版"
-  default_prompt: "使用 $wby-video-subtitles 处理这个视频：配置字幕样式和术语，生成预览，并保持最多两行字幕。"
+  short_description: "生成双语字幕，校正术语并制作定时字号和颜色效果"
+  default_prompt: "使用 $wby-video-subtitles 处理这个视频：复核术语，按需生成双语字幕和定时样式效果，并先交付预览。"

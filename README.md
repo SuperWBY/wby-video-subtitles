@@ -10,14 +10,17 @@ It is designed for repeatable talking-head and screen-recording videos: each sou
 - Keeps the raw transcription separate from reviewed `captions.json`.
 - Uses `terms` as context for names such as `Codex`, `Figma`, and product terminology; review remains required.
 - Lets each job set font, size, text color, outline, background color/transparency, margins, and top/bottom position.
+- Applies reviewed timeline effects that enlarge, shrink, or recolor the displayed subtitle during selected spoken moments.
+- Imports a reviewed translation for English, French, or another language supported by the selected font, then renders source and translation as exactly two lines.
+- Applies reviewed terminology corrections with a backup and edit log.
 - Measures the selected font and produces subtitle cues of at most two rendered lines. It refuses layouts that cannot fit without silently dropping text.
 - Produces versioned SRT, ASS, preview media, a rendered MP4, and a report of warnings and unchecked items.
 
 ## Not included in this release
 
 - Motion graphics, tracked objects, and character animation. Those files are intentionally isolated from this repository.
-- Live speech-driven subtitle animation. Style changes are configured before rendering.
-- Built-in translation or bilingual subtitles. Add a reviewed translation step before importing captions if needed.
+- Live speech control. Timed style changes are prepared from the recorded video's timestamps.
+- Automatic translation API calls. The Agent drafts translations and the user reviews them before import.
 - A guarantee that the same setup works in every Agent, client, operating system, or third-party player.
 
 ## Requirements
@@ -35,6 +38,14 @@ Clone the repository into your Codex skills directory:
 ```sh
 git clone https://github.com/SuperWBY/wby-video-subtitles.git ~/.codex/skills/wby-video-subtitles
 ```
+
+For another Agent, find that client's documented Skill parent directory, then run the repository's installer with that explicit path:
+
+```sh
+python3 scripts/install.py --target /absolute/path/to/that-agent/skills
+```
+
+This installs the same self-contained folder and refuses to overwrite an existing copy. Installation alone does not prove that the target Agent discovered or executed the Skill; run the validation flow described in [references/compatibility.md](references/compatibility.md).
 
 Create a local virtual environment and install the base dependencies:
 
@@ -88,6 +99,8 @@ Then transcribe, review, prepare, preview, and render:
 ```sh
 $PY $SKILL transcribe --job /absolute/path/video-job
 # Review captions.json against the source audio before continuing.
+$PY $SKILL apply-terms --job /absolute/path/video-job --json /absolute/path/reviewed-corrections.json
+$PY $SKILL import-translations --job /absolute/path/video-job --json /absolute/path/reviewed-translations.json
 $PY $SKILL prepare --job /absolute/path/video-job
 $PY $SKILL preview --job /absolute/path/video-job --start 0 --seconds 8
 $PY $SKILL render --job /absolute/path/video-job
@@ -115,6 +128,8 @@ $PY ~/.codex/skills/wby-video-subtitles/scripts/self_test.py
 ```
 
 The checks cover source isolation, text preservation, two-line layout, and refusal of unsafe overwrite paths. They do not replace visual and audio review.
+
+Detailed schemas for terminology corrections, bilingual subtitles, and timed style effects are in [references/usage.md](references/usage.md). Cross-Agent claims and installation boundaries are explained in [references/compatibility.md](references/compatibility.md). Recorded test evidence is in [references/validation.md](references/validation.md).
 
 ## License
 
