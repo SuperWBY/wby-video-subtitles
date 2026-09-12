@@ -1,4 +1,7 @@
 interface:
   display_name: "WBY 视频字幕助手"
   short_description: "生成双语字幕，校正术语并制作定时字号和颜色效果"
+  icon_small: "./assets/icon-small.png"
+  icon_large: "./assets/icon.png"
+  brand_color: "#FFC02E"
   default_prompt: "使用 $wby-video-subtitles 处理这个视频：复核术语，按需生成双语字幕和定时样式效果，并先交付预览。"

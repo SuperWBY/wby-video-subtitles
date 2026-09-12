@@ -1,5 +1,7 @@
 # WBY Video Subtitles
 
+![WBY Video Subtitles: adaptive size, bilingual subtitles, and timed color](assets/hero.png)
+
 `WBY Video Subtitles` is a local Codex Skill for turning a video into editable Chinese subtitles, then preparing ASS/SRT, checking layout, previewing, and rendering a subtitle-burned video.
 
 It is designed for repeatable talking-head and screen-recording videos: each source video has an independent job, its own style, and its own terminology list.
@@ -16,6 +18,18 @@ It is designed for repeatable talking-head and screen-recording videos: each sou
 - Measures the selected font and produces subtitle cues of at most two rendered lines. It refuses layouts that cannot fit without silently dropping text.
 - Produces versioned SRT, ASS, preview media, a rendered MP4, and a report of warnings and unchecked items.
 
+## Built-in font and size presets
+
+The repository includes `Noto Sans CJK SC Regular` under the SIL Open Font License 1.1, so a new job has a Chinese-capable default without a machine-specific path. Font selection follows this order: `--font`, the optional machine configuration, then the bundled font.
+
+| Preset | Primary size | Minimum size | Translation line | Recommended use |
+|---|---:|---:|---:|---|
+| `compact` | 4.0% of frame height | 3.2% | 76% of primary | Dense screen recordings |
+| `standard` | 4.5% | 3.5% | 78% | Default talking-head and demo videos |
+| `emphasis` | 5.2% | 4.0% | 80% | Sparse, high-impact captions |
+
+`standard` starts near 49 px on a 1080-high frame and 97 px on a 2160-high frame. The renderer can shrink individual cues toward the preset minimum when needed; it still refuses content that cannot fit in two lines without dropping text.
+
 ## Not included in this release
 
 - Motion graphics, tracked objects, and character animation. Those files are intentionally isolated from this repository.
@@ -27,7 +41,7 @@ It is designed for repeatable talking-head and screen-recording videos: each sou
 
 - Python 3.12 recommended.
 - FFmpeg with `ass`/libass support and `libx264` for rendering.
-- A Chinese-capable `.ttf` or `.otf` font you are permitted to use.
+- The bundled font, or another `.ttf`/`.otf` font you are permitted to use.
 - Python packages from `requirements.txt`.
 - For transcription: `mlx-whisper` on Apple Silicon, or an independently tested `faster-whisper` setup.
 
@@ -79,8 +93,10 @@ Check the environment and create a new job:
 
 ```sh
 $PY $SKILL doctor
-$PY $SKILL init --video /absolute/path/video.mp4 --job /absolute/path/video-job --font /absolute/path/font.otf
+$PY $SKILL init --video /absolute/path/video.mp4 --job /absolute/path/video-job --preset standard
 ```
+
+Use `--preset compact` or `--preset emphasis` for another built-in size profile. Add `--font /absolute/path/font.otf` to override the bundled font.
 
 Edit `/absolute/path/video-job/config.json` before transcription. Example:
 
@@ -133,4 +149,4 @@ Detailed schemas for terminology corrections, bilingual subtitles, and timed sty
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+The code is MIT licensed; see [LICENSE](LICENSE). The bundled Noto font is licensed separately under the SIL Open Font License 1.1; see [assets/fonts/LICENSE.txt](assets/fonts/LICENSE.txt).

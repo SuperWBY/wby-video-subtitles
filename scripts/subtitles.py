@@ -4,7 +4,14 @@ import argparse, hashlib, json, math, os, re, shutil, subprocess, sys, tempfile
 from pathlib import Path
 from datetime import datetime, timezone
 
-VERSION='1.1.0'
+VERSION='1.2.0'
+SKILL_ROOT=Path(__file__).resolve().parent.parent
+BUNDLED_FONT=SKILL_ROOT/'assets/fonts/NotoSansCJKsc-Regular.otf'
+STYLE_PRESETS={
+    'compact':dict(font_size_ratio=.040,min_font_size_ratio=.032,translation_font_scale=.76),
+    'standard':dict(font_size_ratio=.045,min_font_size_ratio=.035,translation_font_scale=.78),
+    'emphasis':dict(font_size_ratio=.052,min_font_size_ratio=.040,translation_font_scale=.80),
+}
 def emit(x): print(json.dumps(x,ensure_ascii=False,indent=2))
 def read(p): return json.loads(Path(p).read_text(encoding='utf-8'))
 def save(p,x): Path(p).write_text(json.dumps(x,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
@@ -21,6 +28,14 @@ def run(cmd,**kw):
 def machine():
     p=Path.home()/'.local/share/wby-video-subtitles/machine.json'
     return read(p) if p.exists() else {}
+def default_font_path():
+    configured=machine().get('font_path')
+    if configured and Path(configured).expanduser().is_file():return str(Path(configured).expanduser())
+    if BUNDLED_FONT.is_file():return str(BUNDLED_FONT)
+    return ''
+def stylepreset(name):
+    if name not in STYLE_PRESETS:raise ValueError(f'Unknown style preset: {name}')
+    return dict(STYLE_PRESETS[name])
 def ffmpeg():
     p=os.environ.get('SUBTITLE_FFMPEG') or shutil.which('ffmpeg')
     if p:return p
@@ -50,8 +65,9 @@ def init(a):
     if job.exists() and any(job.iterdir()):raise ValueError('Job directory must be empty; existing jobs are never overwritten')
     job.mkdir(parents=True,exist_ok=True)
     save(job/'manifest.json',dict(version=VERSION,video=video,video_sha256=digest,created=datetime.now(timezone.utc).isoformat()))
-    save(job/'config.json',dict(font_path=a.font or machine().get('font_path',''),font_size_ratio=0.045,min_font_size_ratio=0.035,text_color='#FFFFFF',background_color='#000000',background_opacity=0,outline_color='#000000',outline_px=3,margin_x_ratio=0.06,margin_y_ratio=0.06,position='bottom',max_lines=2,max_cps=12,min_duration=0.5,max_duration=6,language='zh',terms=[],translation_font_scale=0.78,translation_color='#D6E4FF',backend='mlx',model=machine().get('model','mlx-community/whisper-large-v3-turbo')))
-    emit(dict(job=str(job),video=video,next='Edit config.json; transcribe or import SRT, then prepare'))
+    preset=stylepreset(a.preset)
+    save(job/'config.json',dict(font_path=a.font or default_font_path(),style_preset=a.preset,**preset,text_color='#FFFFFF',background_color='#000000',background_opacity=0,outline_color='#000000',outline_px=3,margin_x_ratio=0.06,margin_y_ratio=0.06,position='bottom',max_lines=2,max_cps=12,min_duration=0.5,max_duration=6,language='zh',terms=[],translation_color='#D6E4FF',backend='mlx',model=machine().get('model','mlx-community/whisper-large-v3-turbo')))
+    emit(dict(job=str(job),video=video,preset=a.preset,font_path=a.font or default_font_path(),next='Edit config.json; transcribe or import SRT, then prepare'))
 
 def transcribe(a):
     job,m=loadjob(a.job);c=read(job/'config.json')
@@ -367,12 +383,12 @@ def doctor(a):
     import importlib.util
     x={k:importlib.util.find_spec(k) is not None for k in ['PIL','fontTools','jieba','mlx_whisper','faster_whisper']}
     filters=run([ffmpeg(),'-hide_banner','-filters']).stdout
-    emit(dict(version=VERSION,python=sys.executable,ffmpeg=ffmpeg(),ass_filter=bool(re.search(r'\bass\s',filters)),packages=x,machine_config=machine()))
+    emit(dict(version=VERSION,python=sys.executable,ffmpeg=ffmpeg(),ass_filter=bool(re.search(r'\bass\s',filters)),packages=x,machine_config=machine(),default_font=default_font_path(),bundled_font=BUNDLED_FONT.is_file(),style_presets=STYLE_PRESETS))
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);sub=p.add_subparsers(dest='command',required=True)
     sub.add_parser('doctor')
-    q=sub.add_parser('init');q.add_argument('--video',required=True);q.add_argument('--job',required=True);q.add_argument('--font')
+    q=sub.add_parser('init');q.add_argument('--video',required=True);q.add_argument('--job',required=True);q.add_argument('--font');q.add_argument('--preset',choices=sorted(STYLE_PRESETS),default='standard')
     for name in ['transcribe','prepare','preview','render','import-srt','import-translations','apply-terms']:
         q=sub.add_parser(name);q.add_argument('--job',required=True)
         if name=='import-srt':q.add_argument('--srt',required=True)

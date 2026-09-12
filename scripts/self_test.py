@@ -9,7 +9,7 @@ class Pipeline(unittest.TestCase):
         self.temp=tempfile.TemporaryDirectory();self.job=Path(self.temp.name)
         self.video=self.job/'input.mp4';self.video.write_bytes(b'unique input fingerprint')
         s.save(self.job/'manifest.json',{'video':dict(path=str(self.video),width=720,height=1280,duration=30,audio=True),'video_sha256':s.sha(self.video)})
-        self.config=dict(font_path=s.machine()['font_path'],font_size_ratio=.045,min_font_size_ratio=.035,text_color='#FFFFFF',background_color='#000000',background_opacity=.55,outline_color='#181818',outline_px=2,margin_x_ratio=.06,margin_y_ratio=.06,position='bottom',max_lines=2,max_cps=12,min_duration=.5,max_duration=6,terms=[])
+        self.config=dict(font_path=s.default_font_path(),font_size_ratio=.045,min_font_size_ratio=.035,text_color='#FFFFFF',background_color='#000000',background_opacity=.55,outline_color='#181818',outline_px=2,margin_x_ratio=.06,margin_y_ratio=.06,position='bottom',max_lines=2,max_cps=12,min_duration=.5,max_duration=6,terms=[])
         s.save(self.job/'config.json',self.config)
         self.text='这是一段用于测试的长字幕，我们希望完整保留所有文字，并且任何时候最多只能显示两行，同时让不同的视频使用独立的配置。'
         s.save(self.job/'captions.json',[dict(start=0,end=20,text=self.text)])
@@ -96,5 +96,13 @@ class Pipeline(unittest.TestCase):
         manifest=s.read(self.job/'manifest.json');manifest['video']['width']=1920;manifest['video']['height']=1080;s.save(self.job/'manifest.json',manifest)
         s.save(self.job/'captions.json',[dict(start=0,end=5,text='横版视频字幕')]);landscape=self.prep()
         self.assertEqual(round(1080*self.config['font_size_ratio']),s.read(landscape/'layout.json')[0]['font_size'])
+
+    def test_bundled_font_and_style_presets(self):
+        self.assertTrue(s.BUNDLED_FONT.is_file())
+        self.assertTrue(Path(s.default_font_path()).is_file())
+        self.assertEqual(.045,s.stylepreset('standard')['font_size_ratio'])
+        self.assertLess(s.stylepreset('compact')['font_size_ratio'],s.stylepreset('standard')['font_size_ratio'])
+        self.assertGreater(s.stylepreset('emphasis')['font_size_ratio'],s.stylepreset('standard')['font_size_ratio'])
+        with self.assertRaisesRegex(ValueError,'Unknown style preset'):s.stylepreset('unknown')
 
 if __name__=='__main__':unittest.main()

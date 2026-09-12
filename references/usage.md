@@ -13,13 +13,13 @@ python3 -m venv ~/.local/share/wby-video-subtitles/venv
 ~/.local/share/wby-video-subtitles/venv/bin/python -m pip install mlx-whisper
 ```
 
-本机可选配置：`~/.local/share/wby-video-subtitles/machine.json` 包含 `font_path`、`model`。模型可以是本地模型目录或所选后端支持的模型名。只在本机保存绝对路径；分发包不包含用户模型/字体/凭据。字体请使用用户已有且允许使用的 TTF/OTF，不自动从未知站点下载。
+Skill 内置 SIL OFL 1.1 授权的 `Noto Sans CJK SC Regular`。字体选择顺序为命令行 `--font`、本机配置、内置字体。本机可选配置：`~/.local/share/wby-video-subtitles/machine.json` 包含 `font_path`、`model`。模型可以是本地模型目录或所选后端支持的模型名。只在本机保存模型与自定义字体绝对路径，不自动从未知站点下载字体。
 
 以下用 PY 代表实际 Python 路径、SCRIPT 代表 skill/scripts/subtitles.py；实际执行时传递独立 argv 或正确 shell 引号。JOB 是当前视频目录内的新工作目录。
 
 ```text
 PY SCRIPT doctor
-PY SCRIPT init --video VIDEO --job JOB --font FONT
+PY SCRIPT init --video VIDEO --job JOB --preset standard
 PY SCRIPT transcribe --job JOB
 # 或导入已有字幕（不能在已有 captions.json 的 job 再导入）
 PY SCRIPT import-srt --job JOB --srt SRT
@@ -34,9 +34,20 @@ PY SCRIPT render --job JOB
 
 ## 配置字段
 
+`init` 提供三个字号预设。字号按画面高度计算，避免横屏、竖屏和 4K 使用同一固定像素值：
+
+| 预设 | 主字号 | 最小字号 | 译文相对字号 | 适用场景 |
+|---|---:|---:|---:|---|
+| compact | 4.0% | 3.2% | 76% | 信息密集的录屏 |
+| standard | 4.5% | 3.5% | 78% | 默认口播与演示 |
+| emphasis | 5.2% | 4.0% | 80% | 字少、强调感强的画面 |
+
+`standard` 在 1080 高画面约为 49 px，在 2160 高画面约为 97 px。过长字幕会在最小字号范围内逐级缩小；仍放不下时停止并要求拆句，不会裁字。
+
 | 字段 | 含义 |
 |---|---|
-| font_path | 字体文件绝对路径；使用该字体测量与渲染 |
+| font_path | 字体文件路径；默认内置 Noto Sans CJK SC Regular，可用 `--font` 或配置覆盖 |
+| style_preset | 创建 job 时使用的 compact / standard / emphasis 记录；后续实际渲染以各比例字段为准 |
 | font_size_ratio | 字号与画面高度之比，默认 0.045；“大一点”可先提高约 10% 看预览 |
 | min_font_size_ratio | 局部适配下限，默认 0.035，不得大于字号 |
 | text_color | #RRGGBB，如 #FFFFFF |

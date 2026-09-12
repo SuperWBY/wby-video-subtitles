@@ -1,5 +1,17 @@
 # 验证记录
 
+## 1.2.0（2026-09-12）
+
+在 macOS Apple Silicon、Python 3.12 和 FFmpeg 环境验证：
+
+- 15 项脚本回归检查通过；新增检查确认内置字体文件存在，且 compact、standard、emphasis 三档字号顺序及默认比例正确。
+- 在临时 HOME 下隔离本机配置，用 720×1280 合成视频执行 `init --preset emphasis`；生成配置使用仓库内置 Noto Sans CJK SC Regular，主字号比例为 0.052、最小字号比例为 0.040、译文相对字号为 0.80。
+- `init --help` 显示三档可选预设；Skill 结构校验通过。
+- 图标与 README 主视觉均已读取成有效 PNG 并完成目视检查；主视觉包含自适应字号、双语和定时变色三个功能画面。
+- 字体二进制的 name table 标明 Noto Sans CJK SC Regular 2.004 与 SIL Open Font License 1.1；随包保留 OFL 1.1 许可文本。
+
+本轮没有重新烧录完整真实视频；动态字号、变色和中法双语的真实 4K 渲染证据沿用 1.1.0 记录。图片是功能说明图，不代表字幕引擎的像素级输出模板。
+
 ## 1.1.0（2026-09-12）
 
 在 macOS Apple Silicon、Python 3.12 和 FFmpeg/libass 环境验证：
