@@ -19,7 +19,7 @@ Skill 内置 SIL OFL 1.1 授权的 `Noto Sans CJK SC Regular`。字体选择顺�
 
 ```text
 PY SCRIPT doctor
-PY SCRIPT init --video VIDEO --job JOB --preset standard
+PY SCRIPT init --video VIDEO --job JOB --language auto --preset standard
 PY SCRIPT transcribe --job JOB
 # 或导入已有字幕（不能在已有 captions.json 的 job 再导入）
 PY SCRIPT import-srt --job JOB --srt SRT
@@ -56,10 +56,10 @@ PY SCRIPT render --job JOB
 | margin_x_ratio / margin_y_ratio | 画面两侧及上下边距比例 |
 | position | bottom 或 top |
 | max_lines | 固定 2，不允许改成 3 |
-| max_cps / min_duration / max_duration | 阅读速度及停留时间告警阈值；非行业通用标准 |
+| max_cps / min_duration / max_duration | 阅读速度及停留时间告警阈值；默认 max_cps 为 17，但不同语言需要自行调整，不是行业通用标准 |
 | terms | 本期术语字符串数组，用于转写提示和缺失提示，不自动替换 |
 | translation_font_scale / translation_color | 双语第二行相对字号（0.5–1）和颜色 |
-| backend / model / language | mlx 或 faster-whisper；模型名需与后端匹配；语言默认 zh |
+| backend / model / language | mlx 或 faster-whisper；模型名需与后端匹配；源语言默认自动识别，也可用后端支持的 en、fr、zh、ja、pt 等代码明确指定 |
 
 背景是 libass 的矩形字幕背景，不支持圆角气泡。V0.1 把最终音频转为 AAC，不承诺原音轨逐字节相同。
 

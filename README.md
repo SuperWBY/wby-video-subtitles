@@ -4,25 +4,25 @@
 
 ![WBY Video Subtitles: adaptive size, bilingual subtitles, and timed color](assets/hero.png)
 
-`WBY Video Subtitles` is a local Codex Skill for turning a video into editable Chinese subtitles, then preparing ASS/SRT, checking layout, previewing, and rendering a subtitle-burned video.
+`WBY Video Subtitles` is a language-neutral local Codex Skill for turning speech or existing captions into editable subtitles, then preparing ASS/SRT, checking layout, previewing, and rendering a subtitle-burned video.
 
 It is designed for repeatable talking-head and screen-recording videos: each source video has an independent job, its own style, and its own terminology list.
 
 ## What it does
 
-- Transcribes Chinese speech with word timestamps when the selected backend provides them.
+- Automatically detects the spoken language by default, or accepts an explicit backend-supported source language code.
 - Keeps the raw transcription separate from reviewed `captions.json`.
 - Uses `terms` as context for names such as `Codex`, `Figma`, and product terminology; review remains required.
 - Lets each job set font, size, text color, outline, background color/transparency, margins, and top/bottom position.
 - Applies reviewed timeline effects that enlarge, shrink, or recolor the displayed subtitle during selected spoken moments.
-- Imports a reviewed translation for English, French, or another language supported by the selected font, then renders source and translation as exactly two lines.
+- Imports a reviewed translation between any source and target languages supported by the selected font, then renders source and translation as exactly two lines.
 - Applies reviewed terminology corrections with a backup and edit log.
 - Measures the selected font and produces subtitle cues of at most two rendered lines. It refuses layouts that cannot fit without silently dropping text.
 - Produces versioned SRT, ASS, preview media, a rendered MP4, and a report of warnings and unchecked items.
 
 ## Built-in font and size presets
 
-The repository includes `Noto Sans CJK SC Regular` under the SIL Open Font License 1.1, so a new job has a Chinese-capable default without a machine-specific path. Font selection follows this order: `--font`, the optional machine configuration, then the bundled font.
+The repository includes `Noto Sans CJK SC Regular` under the SIL Open Font License 1.1. It provides a practical default for common Latin and CJK scripts without a machine-specific path. Font selection follows this order: `--font`, the optional machine configuration, then the bundled font. For Arabic, Devanagari, or another script with missing glyphs, choose an appropriate font; preflight validation refuses unsupported characters instead of rendering boxes.
 
 | Preset | Primary size | Minimum size | Translation line | Recommended use |
 |---|---:|---:|---:|---|
@@ -77,7 +77,7 @@ Optionally save a local-only machine configuration at `~/.local/share/wby-video-
 
 ```json
 {
-  "font_path": "/absolute/path/to/your/Chinese-font.otf",
+  "font_path": "/absolute/path/to/your/subtitle-font.otf",
   "model": "mlx-community/whisper-large-v3-turbo"
 }
 ```
@@ -95,10 +95,10 @@ Check the environment and create a new job:
 
 ```sh
 $PY $SKILL doctor
-$PY $SKILL init --video /absolute/path/video.mp4 --job /absolute/path/video-job --preset standard
+$PY $SKILL init --video /absolute/path/video.mp4 --job /absolute/path/video-job --language auto --preset standard
 ```
 
-Use `--preset compact` or `--preset emphasis` for another built-in size profile. Add `--font /absolute/path/font.otf` to override the bundled font.
+`--language auto` lets the transcription backend detect the source language. Use a backend-supported code such as `en`, `fr`, `zh`, `ja`, or `pt` to specify it. Use `--preset compact` or `--preset emphasis` for another built-in size profile. Add `--font /absolute/path/font.otf` to override the bundled font.
 
 Edit `/absolute/path/video-job/config.json` before transcription. Example:
 
@@ -147,7 +147,7 @@ $PY ~/.codex/skills/wby-video-subtitles/scripts/self_test.py
 
 The checks cover source isolation, text preservation, two-line layout, and refusal of unsafe overwrite paths. They do not replace visual and audio review.
 
-Detailed schemas for terminology corrections, bilingual subtitles, and timed style effects are in [references/usage.md](references/usage.md). Cross-Agent claims and installation boundaries are explained in [references/compatibility.md](references/compatibility.md). Recorded test evidence is in [references/validation.md](references/validation.md).
+Detailed schemas for terminology corrections, bilingual subtitles, and timed style effects are in the [English usage guide](references/usage.en.md). Cross-Agent claims and installation boundaries are explained in [compatibility](references/compatibility.en.md). Recorded test evidence is in [validation](references/validation.en.md).
 
 ## License
 

@@ -2,18 +2,18 @@
 name: wby-video-subtitles
 description: Generate, review, translate, style, preview, and render local video subtitles with WBY terminology correction, bilingual two-line layout, and timed size/color effects. Use for talking-head and screen-recording subtitle work; excludes character and object animation.
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 # WBY Video Subtitles
 
 ![WBY Video Subtitles 功能预览](assets/hero.png)
 
-Use this Skill for a local video that needs editable Chinese subtitles or subtitle styling. Run `doctor` before the first job. Treat `captions.json` as the reviewed source of truth and preserve the original transcription.
+Use this Skill for a local video in any source language supported by the selected transcription backend. Run `doctor` before the first job. Treat `captions.json` as the reviewed source of truth and preserve the original transcription.
 
 ## Workflow
 
-1. Create one empty job directory per source video with `init`. The job verifies the source hash and refuses stale reuse. It uses the bundled Noto Sans CJK SC font and the `standard` size preset unless a machine font, `--font`, or another preset is selected.
+1. Create one empty job directory per source video with `init`. The job verifies the source hash and refuses stale reuse. Source language defaults to automatic detection; use `--language en`, `fr`, `zh`, or another backend-supported code when explicit control is needed. It uses the bundled Noto Sans CJK SC font and the `standard` size preset unless a machine font, `--font`, or another preset is selected.
 2. Set the font, colors, background, position, and this video's `terms` in `config.json`. `terms` guide transcription. Apply corrections only after listening, using `apply-terms` so the original caption file is backed up and the evidence is logged.
 3. Run `transcribe`, or use `import-srt` when editable captions already exist. Review terminology and uncertain words against the audio.
 4. For bilingual output, translate the reviewed source cues into the requested language, keep names and numbers stable, and import the complete reviewed mapping with `import-translations`. Each language occupies one rendered line; a cue that cannot fit must be split and retimed rather than cropped.
@@ -21,7 +21,7 @@ Use this Skill for a local video that needs editable Chinese subtitles or subtit
 6. Run `prepare`, then preview ordinary, longest, terminology-heavy, bilingual, and styled portions. The renderer preserves text and limits the rendered subtitle to two lines.
 7. Render only after the preview is accepted. Full-file decoding checks container health, duration, and audio; it does not prove semantic accuracy, translation accuracy, or sync.
 
-Read [usage](references/usage.md) for setup, commands, schemas, and configuration fields. Read [compatibility](references/compatibility.md) before describing use in another Agent or operating system. Use [validation](references/validation.md) to distinguish tested behavior from planned capability.
+Read [usage](references/usage.en.md) for setup, commands, schemas, and configuration fields. Read [compatibility](references/compatibility.en.md) before describing use in another Agent or operating system. Use [validation](references/validation.en.md) to distinguish tested behavior from planned capability.
 
 ## Visible defaults
 
@@ -31,11 +31,12 @@ Read [usage](references/usage.md) for setup, commands, schemas, and configuratio
 | `standard` | 4.5% | 3.5% | 78% | Default talking-head and demo videos |
 | `emphasis` | 5.2% | 4.0% | 80% | Sparse, high-impact captions |
 
-The default font is the bundled `Noto Sans CJK SC Regular`. A job can override it with `--font` or `config.json`. Size uses frame height, so `standard` starts near 49 px on a 1080-high frame and 97 px on a 2160-high frame, then shrinks only when needed to preserve the two-line limit.
+The default font is the bundled `Noto Sans CJK SC Regular`, which covers common Latin and CJK use cases. A job can override it with `--font` or `config.json` for Arabic, Devanagari, or any script whose glyphs are missing. Size uses frame height, so `standard` starts near 49 px on a 1080-high frame and 97 px on a 2160-high frame, then shrinks only when needed to preserve the two-line limit.
 
 ## Boundaries
 
 - Timed size and color changes are generated from reviewed timestamps during rendering; this is not live speech control.
 - The pipeline imports and lays out any target language the configured font can render. The Agent produces the translation draft; the script does not call a translation service, and a person must review meaning.
+- No single bundled font covers every writing system. The preflight glyph check reports unsupported characters and requires a suitable replacement font instead of producing missing-glyph boxes.
 - Validation has been performed on macOS Apple Silicon. Other clients, operating systems, and transcription backends require separate verification.
 - Motion graphics, tracked objects, and character animation are deliberately outside this Skill and are not included in this repository.

@@ -1,5 +1,5 @@
 """Regression checks for isolation, text preservation, two-line layout and fail-closed behavior."""
-import argparse, contextlib, io, tempfile, unittest
+import argparse, contextlib, io, re, tempfile, unittest
 from pathlib import Path
 from types import SimpleNamespace
 import subtitles as s
@@ -104,5 +104,20 @@ class Pipeline(unittest.TestCase):
         self.assertLess(s.stylepreset('compact')['font_size_ratio'],s.stylepreset('standard')['font_size_ratio'])
         self.assertGreater(s.stylepreset('emphasis')['font_size_ratio'],s.stylepreset('standard')['font_size_ratio'])
         with self.assertRaisesRegex(ValueError,'Unknown style preset'):s.stylepreset('unknown')
+
+    def test_language_auto_detection_and_neutral_term_prompt(self):
+        self.assertIsNone(s.normalizelanguage('auto'))
+        self.assertEqual('fr',s.normalizelanguage('fr'))
+        self.assertEqual('pt',s.normalizelanguage('pt'))
+        self.assertIsNone(s.transcriptionprompt([]))
+        self.assertEqual('Names and terminology: Codex, Figma',s.transcriptionprompt(['Codex','Figma']))
+        with self.assertRaisesRegex(ValueError,'Language must be auto'):s.normalizelanguage('not a code')
+
+    def test_latin_language_source_text_is_preserved(self):
+        text='Create in any language. Créez dans toutes les langues. Haz que cada palabra destaque.'
+        s.save(self.job/'captions.json',[dict(start=0,end=12,text=text)])
+        revision=self.prep();layout=s.read(revision/'layout.json')
+        self.assertEqual(re.sub(r'\s','',text),re.sub(r'\s','',''.join(''.join(c['lines']) for c in layout)))
+        self.assertTrue(all(1<=len(c['lines'])<=2 for c in layout))
 
 if __name__=='__main__':unittest.main()

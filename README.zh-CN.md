@@ -4,25 +4,25 @@
 
 ![WBY Video Subtitles：自适应字号、双语字幕与定时变色](assets/hero.png)
 
-`WBY Video Subtitles` 是一个本地 Codex Skill，可以把视频转换为可编辑中文字幕，并完成 ASS/SRT 生成、排版检查、预览和字幕烧录。
+`WBY Video Subtitles` 是一个不限定源语言的本地 Codex Skill，可以把视频口播或已有字幕转换为可编辑字幕，并完成 ASS/SRT 生成、排版检查、预览和字幕烧录。
 
 它适合重复制作口播和录屏视频：每个源视频使用独立任务目录，拥有自己的样式、术语表和修订记录。
 
 ## 功能
 
-- 使用支持的转写后端生成带单词时间戳的中文字幕。
+- 默认自动识别口播语言，也可以明确指定转写后端支持的源语言代码。
 - 将原始转写与人工复核后的 `captions.json` 分开保存。
 - 用 `terms` 提示 `Codex`、`Figma`、产品名等专有名词；最终结果仍需复听确认。
 - 为每个任务设置字体、字号、文字颜色、描边、背景颜色与透明度、边距和上下位置。
 - 根据已复核的时间轴，让字幕在指定口播时刻放大、缩小或变色。
-- 导入英语、法语或其他字体支持语言的人工复核译文，以原文一行、译文一行的方式渲染。
+- 在字体支持的任意源语言和目标语言之间导入人工复核译文，以原文一行、译文一行的方式渲染。
 - 应用人工确认的术语修正，并自动备份旧稿、记录修改依据。
 - 使用真实字体宽度计算排版，最多显示两行；无法安全容纳时直接停止，不会静默删字。
 - 输出带版本的 SRT、ASS、预览视频、最终 MP4 和检查报告。
 
 ## 内置字体与字号预设
 
-仓库内置以 SIL Open Font License 1.1 发布的 `Noto Sans CJK SC Regular`，新任务无需先配置作者机器上的字体路径。字体选择顺序为：命令行 `--font`、可选的本机配置、内置字体。
+仓库内置以 SIL Open Font License 1.1 发布的 `Noto Sans CJK SC Regular`，可覆盖常见拉丁文字和 CJK 场景。字体选择顺序为：命令行 `--font`、可选的本机配置、内置字体。阿拉伯文、天城文或其他缺少字形的文字需要换用适合的字体；预检会拒绝缺字，而不是输出方框。
 
 | 预设 | 主字号 | 最小字号 | 译文大小 | 建议场景 |
 |---|---:|---:|---:|---|
@@ -77,7 +77,7 @@ python3 -m venv ~/.local/share/wby-video-subtitles/venv
 
 ```json
 {
-  "font_path": "/absolute/path/to/your/Chinese-font.otf",
+  "font_path": "/absolute/path/to/your/subtitle-font.otf",
   "model": "mlx-community/whisper-large-v3-turbo"
 }
 ```
@@ -95,10 +95,10 @@ SKILL=~/.codex/skills/wby-video-subtitles/scripts/subtitles.py
 
 ```sh
 $PY $SKILL doctor
-$PY $SKILL init --video /absolute/path/video.mp4 --job /absolute/path/video-job --preset standard
+$PY $SKILL init --video /absolute/path/video.mp4 --job /absolute/path/video-job --language auto --preset standard
 ```
 
-可以改用 `--preset compact` 或 `--preset emphasis`。若要覆盖内置字体，添加 `--font /absolute/path/font.otf`。
+`--language auto` 会让转写后端识别源语言，也可以指定后端支持的 `en`、`fr`、`zh`、`ja`、`pt` 等代码。可以改用 `--preset compact` 或 `--preset emphasis`。若要覆盖内置字体，添加 `--font /absolute/path/font.otf`。
 
 转写、复核、排版、预览和渲染：
 

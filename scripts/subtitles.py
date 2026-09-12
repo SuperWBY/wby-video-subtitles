@@ -4,7 +4,7 @@ import argparse, hashlib, json, math, os, re, shutil, subprocess, sys, tempfile
 from pathlib import Path
 from datetime import datetime, timezone
 
-VERSION='1.2.0'
+VERSION='1.3.0'
 SKILL_ROOT=Path(__file__).resolve().parent.parent
 BUNDLED_FONT=SKILL_ROOT/'assets/fonts/NotoSansCJKsc-Regular.otf'
 STYLE_PRESETS={
@@ -36,6 +36,13 @@ def default_font_path():
 def stylepreset(name):
     if name not in STYLE_PRESETS:raise ValueError(f'Unknown style preset: {name}')
     return dict(STYLE_PRESETS[name])
+def normalizelanguage(value):
+    value=(value or 'auto').strip()
+    if value.casefold()=='auto':return None
+    if not re.fullmatch(r'[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*',value):raise ValueError('Language must be auto or a backend-supported language code such as en, fr, zh, ja, or pt')
+    return value
+def transcriptionprompt(terms):
+    return 'Names and terminology: '+', '.join(terms) if terms else None
 def ffmpeg():
     p=os.environ.get('SUBTITLE_FFMPEG') or shutil.which('ffmpeg')
     if p:return p
@@ -66,8 +73,9 @@ def init(a):
     job.mkdir(parents=True,exist_ok=True)
     save(job/'manifest.json',dict(version=VERSION,video=video,video_sha256=digest,created=datetime.now(timezone.utc).isoformat()))
     preset=stylepreset(a.preset)
-    save(job/'config.json',dict(font_path=a.font or default_font_path(),style_preset=a.preset,**preset,text_color='#FFFFFF',background_color='#000000',background_opacity=0,outline_color='#000000',outline_px=3,margin_x_ratio=0.06,margin_y_ratio=0.06,position='bottom',max_lines=2,max_cps=12,min_duration=0.5,max_duration=6,language='zh',terms=[],translation_color='#D6E4FF',backend='mlx',model=machine().get('model','mlx-community/whisper-large-v3-turbo')))
-    emit(dict(job=str(job),video=video,preset=a.preset,font_path=a.font or default_font_path(),next='Edit config.json; transcribe or import SRT, then prepare'))
+    language=normalizelanguage(a.language)
+    save(job/'config.json',dict(font_path=a.font or default_font_path(),style_preset=a.preset,**preset,text_color='#FFFFFF',background_color='#000000',background_opacity=0,outline_color='#000000',outline_px=3,margin_x_ratio=0.06,margin_y_ratio=0.06,position='bottom',max_lines=2,max_cps=17,min_duration=0.5,max_duration=6,language=language,terms=[],translation_color='#D6E4FF',backend='mlx',model=machine().get('model','mlx-community/whisper-large-v3-turbo')))
+    emit(dict(job=str(job),video=video,preset=a.preset,source_language=language or 'auto',font_path=a.font or default_font_path(),next='Edit config.json; transcribe or import SRT, then prepare'))
 
 def transcribe(a):
     job,m=loadjob(a.job);c=read(job/'config.json')
@@ -76,7 +84,7 @@ def transcribe(a):
     if (job/'captions.json').exists():raise ValueError('captions.json exists; refusing to retranscribe over reviewed captions')
     if raw.exists():raise ValueError('raw.json exists. Keep it and edit captions.json, or create a new job to retranscribe')
     backend=c.get('backend','mlx')
-    terms=', '.join(c.get('terms',[]));prompt='软件演示口播。术语：'+terms if terms else None
+    prompt=transcriptionprompt(c.get('terms',[]))
     with tempfile.TemporaryDirectory(prefix='audio-',dir=job) as td:
         wav=Path(td)/'audio.wav'
         run([ffmpeg(),'-v','error','-i',m['video']['path'],'-map','0:a:0','-vn','-ac','1','-ar','16000','-c:a','pcm_s16le',wav])
@@ -388,7 +396,7 @@ def doctor(a):
 def main():
     p=argparse.ArgumentParser(description=__doc__);sub=p.add_subparsers(dest='command',required=True)
     sub.add_parser('doctor')
-    q=sub.add_parser('init');q.add_argument('--video',required=True);q.add_argument('--job',required=True);q.add_argument('--font');q.add_argument('--preset',choices=sorted(STYLE_PRESETS),default='standard')
+    q=sub.add_parser('init');q.add_argument('--video',required=True);q.add_argument('--job',required=True);q.add_argument('--font');q.add_argument('--preset',choices=sorted(STYLE_PRESETS),default='standard');q.add_argument('--language',default='auto')
     for name in ['transcribe','prepare','preview','render','import-srt','import-translations','apply-terms']:
         q=sub.add_parser(name);q.add_argument('--job',required=True)
         if name=='import-srt':q.add_argument('--srt',required=True)

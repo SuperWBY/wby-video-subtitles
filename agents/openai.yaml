@@ -1,6 +1,6 @@
 interface:
   display_name: "WBY 视频字幕助手"
-  short_description: "生成双语字幕，校正术语并制作定时字号和颜色效果"
+  short_description: "处理多语言双语字幕、术语校正和定时字号颜色效果"
   icon_small: "./assets/icon-small.png"
   icon_large: "./assets/icon.png"
   brand_color: "#FFC02E"
