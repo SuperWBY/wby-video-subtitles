@@ -39,17 +39,17 @@ PY SCRIPT render --job JOB
 | 预设 | 主字号 | 最小字号 | 译文相对字号 | 适用场景 |
 |---|---:|---:|---:|---|
 | compact | 4.0% | 3.2% | 76% | 信息密集的录屏 |
-| standard | 4.5% | 3.5% | 78% | 默认口播与演示 |
-| emphasis | 5.2% | 4.0% | 80% | 字少、强调感强的画面 |
+| standard | 6.0% | 4.5% | 78% | 默认口播与演示 |
+| emphasis | 7.2% | 5.2% | 80% | 字少、强调感强的画面 |
 
-`standard` 在 1080 高画面约为 49 px，在 2160 高画面约为 97 px。过长字幕会在最小字号范围内逐级缩小；仍放不下时停止并要求拆句，不会裁字。
+`standard` 在 1080 高画面约为 65 px，在 2160 高画面约为 130 px。过长字幕会在最小字号范围内逐级缩小；仍放不下时停止并要求拆句，不会裁字。
 
 | 字段 | 含义 |
 |---|---|
 | font_path | 字体文件路径；默认内置 Noto Sans CJK SC Regular，可用 `--font` 或配置覆盖 |
 | style_preset | 创建 job 时使用的 compact / standard / emphasis 记录；后续实际渲染以各比例字段为准 |
-| font_size_ratio | 字号与画面高度之比，默认 0.045；“大一点”可先提高约 10% 看预览 |
-| min_font_size_ratio | 局部适配下限，默认 0.035，不得大于字号 |
+| font_size_ratio | 字号与画面高度之比，默认 0.060；“大一点”可先提高约 10% 看预览 |
+| min_font_size_ratio | 局部适配下限，默认 0.045，不得大于字号 |
 | text_color | #RRGGBB，如 #FFFFFF |
 | background_color / background_opacity | 背景颜色及 0–1 不透明度；0 关闭框背景 |
 | outline_color / outline_px | 关闭背景时的描边色/宽度；开启背景时宽度作为边框尺寸 |

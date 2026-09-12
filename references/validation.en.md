@@ -1,5 +1,11 @@
 # Validation record
 
+## 1.3.3 (2026-09-12)
+
+- Increased standard primary/minimum ratios to 0.060/0.045 and emphasis to 0.072/0.052. Existing job configurations keep their saved values.
+- All 17 regression tests passed on macOS Apple Silicon.
+- Rendered a 14.61-second 3324x2160 source with five cues at size 130; full decoding, duration, and audio-presence checks passed. The longest rendered cue was visually checked. This does not establish full human-reviewed audio synchronization.
+
 ## 1.3.2 (2026-09-12)
 
 - Reworked all README pages into one primary visual, one collapsible animated proof, and one three-row capability table so the hero and animation do not compete in the first viewport.

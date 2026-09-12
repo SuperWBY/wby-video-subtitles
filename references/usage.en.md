@@ -40,10 +40,10 @@ Font size is based on frame height so landscape, portrait, HD, and 4K videos do 
 | Preset | Primary | Minimum | Translation | Use |
 |---|---:|---:|---:|---|
 | `compact` | 4.0% | 3.2% | 76% of primary | Dense screen recordings |
-| `standard` | 4.5% | 3.5% | 78% | Default talking-head and demo videos |
-| `emphasis` | 5.2% | 4.0% | 80% | Sparse, high-impact captions |
+| `standard` | 6.0% | 4.5% | 78% | Default talking-head and demo videos |
+| `emphasis` | 7.2% | 5.2% | 80% | Sparse, high-impact captions |
 
-The `standard` preset starts near 49 px on a 1080-high frame and 97 px on a 2160-high frame. A long cue may shrink toward the preset minimum. Content that still cannot fit in two lines is rejected and must be split and retimed.
+The `standard` preset starts near 65 px on a 1080-high frame and 130 px on a 2160-high frame. A long cue may shrink toward the preset minimum. Content that still cannot fit in two lines is rejected and must be split and retimed.
 
 ## Configuration fields
 

@@ -100,7 +100,7 @@ class Pipeline(unittest.TestCase):
     def test_bundled_font_and_style_presets(self):
         self.assertTrue(s.BUNDLED_FONT.is_file())
         self.assertTrue(Path(s.default_font_path()).is_file())
-        self.assertEqual(.045,s.stylepreset('standard')['font_size_ratio'])
+        self.assertEqual(.060,s.stylepreset('standard')['font_size_ratio'])
         self.assertLess(s.stylepreset('compact')['font_size_ratio'],s.stylepreset('standard')['font_size_ratio'])
         self.assertGreater(s.stylepreset('emphasis')['font_size_ratio'],s.stylepreset('standard')['font_size_ratio'])
         with self.assertRaisesRegex(ValueError,'Unknown style preset'):s.stylepreset('unknown')

@@ -4,13 +4,13 @@ import argparse, hashlib, json, math, os, re, shutil, subprocess, sys, tempfile
 from pathlib import Path
 from datetime import datetime, timezone
 
-VERSION='1.3.2'
+VERSION='1.3.3'
 SKILL_ROOT=Path(__file__).resolve().parent.parent
 BUNDLED_FONT=SKILL_ROOT/'assets/fonts/NotoSansCJKsc-Regular.otf'
 STYLE_PRESETS={
     'compact':dict(font_size_ratio=.040,min_font_size_ratio=.032,translation_font_scale=.76),
-    'standard':dict(font_size_ratio=.045,min_font_size_ratio=.035,translation_font_scale=.78),
-    'emphasis':dict(font_size_ratio=.052,min_font_size_ratio=.040,translation_font_scale=.80),
+    'standard':dict(font_size_ratio=.060,min_font_size_ratio=.045,translation_font_scale=.78),
+    'emphasis':dict(font_size_ratio=.072,min_font_size_ratio=.052,translation_font_scale=.80),
 }
 def emit(x): print(json.dumps(x,ensure_ascii=False,indent=2))
 def read(p): return json.loads(Path(p).read_text(encoding='utf-8'))

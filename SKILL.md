@@ -2,7 +2,7 @@
 name: wby-video-subtitles
 description: Generate, review, translate, style, preview, and render local video subtitles with WBY terminology correction, bilingual two-line layout, and timed size/color effects. Use for talking-head and screen-recording subtitle work; excludes character and object animation.
 metadata:
-  version: 1.3.2
+  version: 1.3.3
 ---
 
 # WBY Video Subtitles
@@ -38,10 +38,10 @@ Read [usage](references/usage.en.md) for setup, commands, schemas, and configura
 | Preset | Primary size | Minimum size | Translation line | Use |
 |---|---:|---:|---:|---|
 | `compact` | 4.0% of frame height | 3.2% | 76% of primary | Dense screen recordings |
-| `standard` | 4.5% | 3.5% | 78% | Default talking-head and demo videos |
-| `emphasis` | 5.2% | 4.0% | 80% | Sparse, high-impact captions |
+| `standard` | 6.0% | 4.5% | 78% | Default talking-head and demo videos |
+| `emphasis` | 7.2% | 5.2% | 80% | Sparse, high-impact captions |
 
-The default font is the bundled `Noto Sans CJK SC Regular`, which covers common Latin and CJK use cases. A job can override it with `--font` or `config.json` for Arabic, Devanagari, or any script whose glyphs are missing. Size uses frame height, so `standard` starts near 49 px on a 1080-high frame and 97 px on a 2160-high frame, then shrinks only when needed to preserve the two-line limit.
+The default font is the bundled `Noto Sans CJK SC Regular`, which covers common Latin and CJK use cases. A job can override it with `--font` or `config.json` for Arabic, Devanagari, or any script whose glyphs are missing. Size uses frame height, so `standard` starts near 65 px on a 1080-high frame and 130 px on a 2160-high frame, then shrinks only when needed to preserve the two-line limit.
 
 ## Boundaries
 

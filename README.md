@@ -32,10 +32,10 @@ The repository includes `Noto Sans CJK SC Regular` under the SIL Open Font Licen
 | Preset | Primary size | Minimum size | Translation line | Recommended use |
 |---|---:|---:|---:|---|
 | `compact` | 4.0% of frame height | 3.2% | 76% of primary | Dense screen recordings |
-| `standard` | 4.5% | 3.5% | 78% | Default talking-head and demo videos |
-| `emphasis` | 5.2% | 4.0% | 80% | Sparse, high-impact captions |
+| `standard` | 6.0% | 4.5% | 78% | Default talking-head and demo videos |
+| `emphasis` | 7.2% | 5.2% | 80% | Sparse, high-impact captions |
 
-`standard` starts near 49 px on a 1080-high frame and 97 px on a 2160-high frame. The renderer can shrink individual cues toward the preset minimum when needed; it still refuses content that cannot fit in two lines without dropping text.
+`standard` starts near 65 px on a 1080-high frame and 130 px on a 2160-high frame. The renderer can shrink individual cues toward the preset minimum when needed; it still refuses content that cannot fit in two lines without dropping text.
 
 ## Requirements
 
